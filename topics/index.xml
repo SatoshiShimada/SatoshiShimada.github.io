@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Topics on Satoshi&#39;s blog</title>
+    <link>https://satoshishimada.github.io/topics/</link>
+    <description>Recent content in Topics on Satoshi&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ja</language>
+    <copyright>&amp;copy; 2015 - 2018. Satoshi Shimada All rights reserved.</copyright>
+    
+	<atom:link href="https://satoshishimada.github.io/topics/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+  </channel>
+</rss>

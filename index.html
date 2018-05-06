@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.38.2" />
+
+  <title>Satoshi&#39;s blog</title>
+
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/1.0.0/pure-min.css">
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/1.0.0/grids-responsive-old-ie-min.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/1.0.0/grids-responsive-min.css">
+  <!--<![endif]-->
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="https://satoshishimada.github.io/css/side-menu-old-ie.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="https://satoshishimada.github.io/css/side-menu.css">
+  <!--<![endif]-->
+
+  <link rel="stylesheet" href="https://satoshishimada.github.io/css/blackburn.css">
+
+  
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  
+  <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet" type="text/css">
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+ 
+  
+  <link rel="alternate" type="application/rss+xml" title="Satoshi&#39;s blog" href="https://satoshishimada.github.io/index.xml" />
+  
+
+  
+
+  <link rel="shortcut icon" href="https://satoshishimada.github.io/img/favicon.ico" type="image/x-icon" />
+
+  
+  
+
+</head>
+
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+  <a class="pure-menu-heading brand" href="https://satoshishimada.github.io/">RoboCupper</a>
+
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="https://satoshishimada.github.io/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="https://satoshishimada.github.io/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="https://satoshishimada.github.io/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    
+    <li class="pure-menu-item">
+      <a class="pure-menu-link" href="https://satoshishimada.github.io/index.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+    </li>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+  </ul>
+</div>
+
+
+  <div>
+  <div class="small-print">
+    <small>&copy; 2015 - 2018. Satoshi Shimada All rights reserved.</small>
+  </div>
+  <div class="small-print">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>Satoshi&#39;s blog</h1>
+  <h2>RoboCup, Image Processing and Deep Learning topics</h2>
+</div>
+
+<div class="content">
+  
+    <article>
+  <header>
+    <h2><a href="https://satoshishimada.github.io/post/fcn/">FCNでセグメンテーション</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>25 Apr 2018, 13:27</time>
+  </div>
+
+  
+
+  
+  
+  
+  
+
+  
+  
+  
+  <div>
+    <i class="fa fa-tags fa-fw"></i>
+    
+      <a class="post-taxonomy-tag" href="https://satoshishimada.github.io/tags/deep-learning">deep learning</a>&nbsp;&#47;
+    
+      <a class="post-taxonomy-tag" href="https://satoshishimada.github.io/tags/image-processing">image processing</a>&nbsp;&#47;
+    
+      <a class="post-taxonomy-tag" href="https://satoshishimada.github.io/tags/robocup">robocup</a>
+    
+  </div>
+  
+  
+
+</div>
+
+  </header>
+
+  <p>
+  FCNをロボカップの画像ドメインに適用してみました。
+データセットを自作しなければならず十分な学習データを用意できていないため精度はあまり良くはなさそうです。
+ラベルのついた画像は20枚のみで学習させました。
+ランダムに輝度の変化をさせて60枚に増やして学習させています。
+十分なデータセットがあれば精度も出せそうです。
+正確な精度の検証はできていないので時間があればデータをとりたい。
+   input image     label image     result image   Validation result:   result image   
+  </p>
+
+  
+</article>
+
+  
+    <article>
+  <header>
+    <h2><a href="https://satoshishimada.github.io/post/slic/">SLIC (simple linear iterative clustering) 実装</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>08 Nov 2017, 12:45</time>
+  </div>
+
+  
+
+  
+  
+  
+  
+
+  
+  
+  
+  <div>
+    <i class="fa fa-tags fa-fw"></i>
+    
+      <a class="post-taxonomy-tag" href="https://satoshishimada.github.io/tags/image-processing">image processing</a>
+    
+  </div>
+  
+  
+
+</div>
+
+  </header>
+
+  <p>
+  SLICを実装しました。
+セグメンテーションのラベル画像を作成するツールのために実装しましたがそっちはうまくいかなかった。
+(イマイチなツール: https://github.com/satoshishimada/segmentation_label_tool.git)
+Code: https://github.com/satoshishimada/slic.git
+Reference: https://infoscience.epfl.ch/record/177415/files/Superpixel_PAMI2011-2.pdf
+  </p>
+
+  
+</article>
+
+  
+    <article>
+  <header>
+    <h2><a href="https://satoshishimada.github.io/post/detect_ball_method/">クラス分類モデルを用いたサッカーボール検出</a></h2>
+
+    <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>11 Mar 2016, 13:49</time>
+  </div>
+
+  
+
+  
+  
+  
+  
+
+  
+  
+  
+  <div>
+    <i class="fa fa-tags fa-fw"></i>
+    
+      <a class="post-taxonomy-tag" href="https://satoshishimada.github.io/tags/deep-learning">deep learning</a>&nbsp;&#47;
+    
+      <a class="post-taxonomy-tag" href="https://satoshishimada.github.io/tags/image-processing">image processing</a>&nbsp;&#47;
+    
+      <a class="post-taxonomy-tag" href="https://satoshishimada.github.io/tags/robocup">robocup</a>
+    
+  </div>
+  
+  
+
+</div>
+
+  </header>
+
+  <p>
+  classificationのCNNモデルを使用してボール検出を試しました。
+320x240の入力画像を40x40に切り取りそれぞれのクラスを推論しボールが写っている画像の箇所をボールの位置をするようになっています。
+入力画像:
+  切り取った画像:
+  学習結果:
+    ネットワークの各層の出力を可視化した結果:
+Input -&gt; Convolution1 (36x36 8 channels)         Convolution1 -&gt; ReLU1 (36x36 8 channels         ReLU1 -&gt; MaxPooling1 (17x17 8 channels)         MaxPooling1 -&gt; Convolution2 (13x13 14 channels)               Convolution2 -&gt; ReLU2 (13x13 14 channels)               ReLU2 -&gt; MaxPooling2 (6x6 14 channels)               
+  </p>
+
+  
+</article>
+
+  
+
+  
+
+
+</div>
+
+</div>
+</div>
+<script src="https://satoshishimada.github.io/js/ui.js"></script>
+
+
+
+
+
+
+</body>
+</html>
+

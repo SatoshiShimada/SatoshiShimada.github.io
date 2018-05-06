@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Image Processing on Satoshi&#39;s blog</title>
+    <link>https://satoshishimada.github.io/tags/image-processing/</link>
+    <description>Recent content in Image Processing on Satoshi&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ja</language>
+    <copyright>&amp;copy; 2015 - 2018. Satoshi Shimada All rights reserved.</copyright>
+    <lastBuildDate>Wed, 25 Apr 2018 13:27:42 +0900</lastBuildDate>
+    
+	<atom:link href="https://satoshishimada.github.io/tags/image-processing/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>FCNでセグメンテーション</title>
+      <link>https://satoshishimada.github.io/post/fcn/</link>
+      <pubDate>Wed, 25 Apr 2018 13:27:42 +0900</pubDate>
+      
+      <guid>https://satoshishimada.github.io/post/fcn/</guid>
+      <description>FCNをロボカップの画像ドメインに適用してみました。
+データセットを自作しなければならず十分な学習データを用意できていないため精度はあまり良くはなさそうです。
+ラベルのついた画像は20枚のみで学習させました。
+ランダムに輝度の変化をさせて60枚に増やして学習させています。
+十分なデータセットがあれば精度も出せそうです。
+正確な精度の検証はできていないので時間があればデータをとりたい。
+   input image     label image     result image   Validation result:   result image   </description>
+    </item>
+    
+    <item>
+      <title>SLIC (simple linear iterative clustering) 実装</title>
+      <link>https://satoshishimada.github.io/post/slic/</link>
+      <pubDate>Wed, 08 Nov 2017 12:45:58 +0900</pubDate>
+      
+      <guid>https://satoshishimada.github.io/post/slic/</guid>
+      <description>SLICを実装しました。
+セグメンテーションのラベル画像を作成するツールのために実装しましたがそっちはうまくいかなかった。
+(イマイチなツール: https://github.com/satoshishimada/segmentation_label_tool.git)
+Code: https://github.com/satoshishimada/slic.git
+Reference: https://infoscience.epfl.ch/record/177415/files/Superpixel_PAMI2011-2.pdf</description>
+    </item>
+    
+    <item>
+      <title>クラス分類モデルを用いたサッカーボール検出</title>
+      <link>https://satoshishimada.github.io/post/detect_ball_method/</link>
+      <pubDate>Fri, 11 Mar 2016 13:49:42 +0900</pubDate>
+      
+      <guid>https://satoshishimada.github.io/post/detect_ball_method/</guid>
+      <description>classificationのCNNモデルを使用してボール検出を試しました。
+320x240の入力画像を40x40に切り取りそれぞれのクラスを推論しボールが写っている画像の箇所をボールの位置をするようになっています。
+入力画像:
+  切り取った画像:
+  学習結果:
+    ネットワークの各層の出力を可視化した結果:
+Input -&amp;gt; Convolution1 (36x36 8 channels)         Convolution1 -&amp;gt; ReLU1 (36x36 8 channels         ReLU1 -&amp;gt; MaxPooling1 (17x17 8 channels)         MaxPooling1 -&amp;gt; Convolution2 (13x13 14 channels)               Convolution2 -&amp;gt; ReLU2 (13x13 14 channels)               ReLU2 -&amp;gt; MaxPooling2 (6x6 14 channels)               </description>
+    </item>
+    
+  </channel>
+</rss>

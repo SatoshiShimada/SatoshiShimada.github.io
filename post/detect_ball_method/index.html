@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="generator" content="Hugo 0.38.2" />
+
+  <title>クラス分類モデルを用いたサッカーボール検出 &middot; Satoshi&#39;s blog</title>
+
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/1.0.0/pure-min.css">
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/1.0.0/grids-responsive-old-ie-min.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/1.0.0/grids-responsive-min.css">
+  <!--<![endif]-->
+
+  <!--[if lte IE 8]>
+  <link rel="stylesheet" href="https://satoshishimada.github.io/css/side-menu-old-ie.css">
+  <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="https://satoshishimada.github.io/css/side-menu.css">
+  <!--<![endif]-->
+
+  <link rel="stylesheet" href="https://satoshishimada.github.io/css/blackburn.css">
+
+  
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  
+  <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet" type="text/css">
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+ 
+  
+
+  
+
+  <link rel="shortcut icon" href="https://satoshishimada.github.io/img/favicon.ico" type="image/x-icon" />
+
+  
+  
+
+</head>
+
+
+<body>
+<div id="layout">
+
+  
+<a href="#menu" id="menuLink" class="menu-link">
+  
+  <span></span>
+</a>
+<div id="menu">
+
+  
+  <a class="pure-menu-heading brand" href="https://satoshishimada.github.io/">RoboCupper</a>
+
+
+  <div class="pure-menu">
+    <ul class="pure-menu-list">
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="https://satoshishimada.github.io/"><i class='fa fa-home fa-fw'></i>Home</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="https://satoshishimada.github.io/post/"><i class='fa fa-list fa-fw'></i>Posts</a>
+      
+        </li>
+      
+      
+        <li class="pure-menu-item">
+          <a class="pure-menu-link" href="https://satoshishimada.github.io/about/"><i class='fa fa-user fa-fw'></i>About</a>
+      
+        </li>
+      
+    </ul>
+  </div>
+
+  <div class="pure-menu social">
+  <ul class="pure-menu-list">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+  </ul>
+</div>
+
+
+  <div>
+  <div class="small-print">
+    <small>&copy; 2015 - 2018. Satoshi Shimada All rights reserved.</small>
+  </div>
+  <div class="small-print">
+    <small>Built with&nbsp;<a href="https://gohugo.io/" target="_blank">Hugo</a></small>
+    <small>Theme&nbsp;<a href="https://github.com/yoshiharuyamashita/blackburn" target="_blank">Blackburn</a></small>
+  </div>
+</div>
+
+</div>
+
+
+  <div id="main">
+
+
+<div class="header">
+  <h1>クラス分類モデルを用いたサッカーボール検出</h1>
+  <h2></h2>
+</div>
+<div class="content">
+
+  <div class="post-meta">
+
+  <div>
+    <i class="fa fa-calendar fa-fw"></i>
+    <time>11 Mar 2016, 13:49</time>
+  </div>
+
+  
+
+  
+  
+  
+  
+
+  
+  
+  
+  <div>
+    <i class="fa fa-tags fa-fw"></i>
+    
+      <a class="post-taxonomy-tag" href="https://satoshishimada.github.io/tags/deep-learning">deep learning</a>&nbsp;&#47;
+    
+      <a class="post-taxonomy-tag" href="https://satoshishimada.github.io/tags/image-processing">image processing</a>&nbsp;&#47;
+    
+      <a class="post-taxonomy-tag" href="https://satoshishimada.github.io/tags/robocup">robocup</a>
+    
+  </div>
+  
+  
+
+</div>
+
+  <p>classificationのCNNモデルを使用してボール検出を試しました。<br />
+320x240の入力画像を40x40に切り取りそれぞれのクラスを推論しボールが写っている画像の箇所をボールの位置をするようになっています。</p>
+
+<p>入力画像:<br />
+
+<figure>
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/grabber.png" width="320" height="240" />
+    
+    
+</figure>
+
+切り取った画像:<br />
+
+<figure>
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/input.png" width="40" height="40" />
+    
+    
+</figure>
+
+学習結果:<br />
+
+<figure>
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/anime_1.gif" width="320" height="240" />
+    
+    
+</figure>
+
+
+<figure>
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/anime_2.gif" width="320" height="240" />
+    
+    
+</figure>
+</p>
+
+<p>ネットワークの各層の出力を可視化した結果:<br />
+Input -&gt; Convolution1 (36x36 8 channels)
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/input_conv1-0.png" width="72" height="72" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/input_conv1-1.png" width="72" height="72" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/input_conv1-2.png" width="72" height="72" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/input_conv1-3.png" width="72" height="72" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/input_conv1-4.png" width="72" height="72" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/input_conv1-5.png" width="72" height="72" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/input_conv1-6.png" width="72" height="72" />
+    
+    
+</figure>
+
+
+<figure class="last-left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/input_conv1-7.png" width="72" height="72" />
+    
+    
+</figure>
+</p>
+
+<p>Convolution1 -&gt; ReLU1 (36x36 8 channels
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/conv1_relu1-0.png" width="72" height="72" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/conv1_relu1-1.png" width="72" height="72" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/conv1_relu1-2.png" width="72" height="72" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/conv1_relu1-3.png" width="72" height="72" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/conv1_relu1-4.png" width="72" height="72" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/conv1_relu1-5.png" width="72" height="72" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/conv1_relu1-6.png" width="72" height="72" />
+    
+    
+</figure>
+
+
+<figure class="last-left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/conv1_relu1-7.png" width="72" height="72" />
+    
+    
+</figure>
+</p>
+
+<p>ReLU1 -&gt; MaxPooling1 (17x17 8 channels)
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/relu1_pool1-0.png" width="34" height="34" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/relu1_pool1-1.png" width="34" height="34" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/relu1_pool1-2.png" width="34" height="34" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/relu1_pool1-3.png" width="34" height="34" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/relu1_pool1-4.png" width="34" height="34" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/relu1_pool1-5.png" width="34" height="34" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/relu1_pool1-6.png" width="34" height="34" />
+    
+    
+</figure>
+
+
+<figure class="last-left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/relu1_pool1-7.png" width="34" height="34" />
+    
+    
+</figure>
+</p>
+
+<p>MaxPooling1 -&gt; Convolution2 (13x13 14 channels)
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/pool1_conv2-0.png" width="26" height="26" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/pool1_conv2-1.png" width="26" height="26" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/pool1_conv2-2.png" width="26" height="26" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/pool1_conv2-3.png" width="26" height="26" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/pool1_conv2-4.png" width="26" height="26" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/pool1_conv2-5.png" width="26" height="26" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/pool1_conv2-6.png" width="26" height="26" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/pool1_conv2-7.png" width="26" height="26" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/pool1_conv2-8.png" width="26" height="26" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/pool1_conv2-9.png" width="26" height="26" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/pool1_conv2-10.png" width="26" height="26" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/pool1_conv2-11.png" width="26" height="26" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/pool1_conv2-12.png" width="26" height="26" />
+    
+    
+</figure>
+
+
+<figure class="last-left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/pool1_conv2-13.png" width="26" height="26" />
+    
+    
+</figure>
+</p>
+
+<p>Convolution2 -&gt; ReLU2 (13x13 14 channels)
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/conv2_relu2-0.png" width="26" height="26" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/conv2_relu2-1.png" width="26" height="26" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/conv2_relu2-2.png" width="26" height="26" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/conv2_relu2-3.png" width="26" height="26" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/conv2_relu2-4.png" width="26" height="26" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/conv2_relu2-5.png" width="26" height="26" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/conv2_relu2-6.png" width="26" height="26" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/conv2_relu2-7.png" width="26" height="26" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/conv2_relu2-8.png" width="26" height="26" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/conv2_relu2-9.png" width="26" height="26" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/conv2_relu2-10.png" width="26" height="26" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/conv2_relu2-11.png" width="26" height="26" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/conv2_relu2-12.png" width="26" height="26" />
+    
+    
+</figure>
+
+
+<figure class="last-left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/conv2_relu2-13.png" width="26" height="26" />
+    
+    
+</figure>
+</p>
+
+<p>ReLU2 -&gt; MaxPooling2 (6x6 14 channels)
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/relu2_pool2-0.png" width="12" height="12" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/relu2_pool2-1.png" width="12" height="12" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/relu2_pool2-2.png" width="12" height="12" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/relu2_pool2-3.png" width="12" height="12" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/relu2_pool2-4.png" width="12" height="12" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/relu2_pool2-5.png" width="12" height="12" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/relu2_pool2-6.png" width="12" height="12" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/relu2_pool2-7.png" width="12" height="12" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/relu2_pool2-8.png" width="12" height="12" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/relu2_pool2-9.png" width="12" height="12" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/relu2_pool2-10.png" width="12" height="12" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/relu2_pool2-11.png" width="12" height="12" />
+    
+    
+</figure>
+
+
+<figure class="left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/relu2_pool2-12.png" width="12" height="12" />
+    
+    
+</figure>
+
+
+<figure class="last-left">
+    
+        <img src="https://satoshishimada.github.io/pictures/detect_ball_method/visualize_data/relu2_pool2-13.png" width="12" height="12" />
+    
+    
+</figure>
+</p>
+
+<!--
+![conv1_relu1-0](./pictures/visualize_filter/conv1_relu1-0.png)
+-->
+
+
+  
+<div class="prev-next-post pure-g">
+  <div class="pure-u-1-24" style="text-align: left;">
+    
+  </div>
+  <div class="pure-u-10-24">
+    
+  </div>
+  <div class="pure-u-2-24">
+    &nbsp;
+  </div>
+  <div class="pure-u-10-24">
+    
+    <nav class="next">
+      <a href="https://satoshishimada.github.io/post/slic/">SLIC (simple linear iterative clustering) 実装</a>
+    </nav>
+    
+  </div>
+  <div class="pure-u-1-24" style="text-align: right;">
+    
+    <a href="https://satoshishimada.github.io/post/slic/"><i class="fa fa-chevron-right"></i></a>
+    
+  </div>
+</div>
+
+
+
+  
+
+</div>
+
+</div>
+</div>
+<script src="https://satoshishimada.github.io/js/ui.js"></script>
+
+
+
+
+
+
+</body>
+</html>
+
